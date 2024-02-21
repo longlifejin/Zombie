@@ -37,7 +37,6 @@ void SceneGame::Enter()
 
 	TileMap* tileMap = dynamic_cast<TileMap*>(FindGo("Background"));
 	tileMap->SetPosition({ 0.f,0.f });
-
 	tileMap->SetOrigin(Origins::MC);
 	player->SetPosition({ 0.f,0.f });
 }
@@ -62,6 +61,26 @@ void SceneGame::Update(float dt)
 		zombie->SetPosition(Utils::RandomInUnitCircle() * 500.f); //반경이 500인 원 안에 좀비 생성
 
 		AddGo(zombie);
+	}
+
+	//충돌한 좀비 객체 지우기
+	std::list<GameObject*> removeZombieobj; //지울 좀비 객체 담아두기
+	for (auto obj : gameObjects)
+	{
+		Zombie* zombie = dynamic_cast<Zombie*>(obj);
+		if (zombie != nullptr)
+		{
+			if (Utils::Distance(zombie->GetPosition(), player->GetPosition()) <= 10.f)
+			{
+				removeZombieobj.push_back(obj);
+			}
+		}
+	}
+
+	for(auto obj : removeZombieobj)
+	{
+		gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), obj), gameObjects.end());
+		delete obj;
 	}
 }
 

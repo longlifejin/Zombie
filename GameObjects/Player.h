@@ -13,6 +13,8 @@ public:
 	Player(const std::string& name = "");
 	~Player() override = default; //가상 소멸자 재구현
 
+	sf::Vector2f GetDirection() { return this->direction; }
+
 	void Init() override;
 	void Release() override;
 

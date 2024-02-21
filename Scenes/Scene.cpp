@@ -179,7 +179,6 @@ GameObject* Scene::AddGo(GameObject* obj, Layers layer)
 			gameObjects.push_back(obj);
 			return obj;
 		}
-
 	}
 
 	if (layer == Layers::Ui)
