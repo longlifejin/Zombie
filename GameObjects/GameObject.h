@@ -19,6 +19,44 @@ public:
 	GameObject(const std::string& name = "");
 	virtual ~GameObject();
 
+	static bool CompareDrawOrder(const GameObject& lhs, const GameObject& rhs)
+	{
+		if (lhs.sortLayer != rhs.sortLayer)
+		{
+			return lhs.sortLayer < rhs.sortLayer;
+		}
+		return lhs.sortOrder < rhs.sortOrder;
+	}
+
+	bool operator<(const GameObject& rhs) //연산자 재구현
+	{
+		if (sortLayer != rhs.sortLayer)
+		{
+			return sortLayer < rhs.sortLayer;
+		}
+		return sortOrder < rhs.sortOrder;
+	}
+
+	static bool CompareDrawOrder(const GameObject* lhs, const GameObject* rhs)
+	{
+		if (lhs->sortLayer != rhs->sortLayer)
+		{
+			return lhs->sortLayer < rhs->sortLayer;
+		}
+		return lhs->sortOrder < rhs->sortOrder;
+	}
+
+	bool operator<(const GameObject* rhs) //연산자 재구현
+	{
+		if (sortLayer != rhs->sortLayer)
+		{
+			return sortLayer < rhs->sortLayer;
+		}
+		return sortOrder < rhs->sortOrder;
+	}
+
+
+
 	bool GetActive() const { return active; }
 	sf::Vector2f GetOrigin() const { return origin; }
 	sf::Vector2f GetPosition() const { return position; }
@@ -46,14 +84,12 @@ public:
 
 	virtual void Init();
 	virtual void Release();
-
 	virtual void Reset();
-
 	virtual void Update(float dt);
 	virtual void Draw(sf::RenderWindow& window);
 
 	std::string name = "";
-	int sortLayer = 0;
+	int sortLayer = 0; //그리기 순서를 정하기 위한 변수
 	int sortOrder = 0;
 };
 

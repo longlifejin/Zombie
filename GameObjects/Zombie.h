@@ -8,7 +8,7 @@ public:
 	enum class Types
 	{
 		Bloater,
-		Chase,
+		Chaser,
 		Crawler,
 	};
 	static const int TotalTypes = 3;
@@ -25,6 +25,8 @@ protected:
 	int hp; //현재 hp
 
 	Player* player;
+
+	sf::Vector2f zomdirection;
 
 	Zombie(const std::string& name = ""); //create함수 통해서만 좀비 만들려고 protected 멤버
 

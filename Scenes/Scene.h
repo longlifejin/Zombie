@@ -20,6 +20,10 @@ protected:
 	std::list<GameObject*> gameObjects; //월드에서 사용
 	std::list<GameObject*> uiGameObjects;
 
+	std::list<GameObject*> resortingGameObjects; //재정렬 할 리스트
+	std::list<GameObject*> removeGameObjects; //지울 obj 담는 리스트
+
+
 	sf::View worldView;
 	sf::View uiView;
 
@@ -48,6 +52,7 @@ public:
 	virtual int FindGoAll(const std::string& name, std::list<GameObject*>& list, Layers layer = Layers::Everything);
 
 	virtual GameObject* AddGo(GameObject* obj, Layers layer = Layers::World);
+	virtual void ResortGo(GameObject* obj);
 	virtual void RemoveGo(GameObject* obj);
 
 	Scene(const Scene&) = delete;

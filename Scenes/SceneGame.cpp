@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "TileMap.h"
 #include "Zombie.h"
+#include "ZombieSpawner.h"
 
 SceneGame::SceneGame(SceneIds id)
 	:Scene(id)
@@ -12,6 +13,15 @@ SceneGame::SceneGame(SceneIds id)
 void SceneGame::Init()
 {
 	AddGo(new TileMap("Background"));
+
+	spawners.push_back(new ZombieSpawner());
+	spawners.push_back(new ZombieSpawner());
+
+	for (auto s : spawners)
+	{
+		s->SetPosition(Utils::RandomOnUnitCircle() * 250.f);
+		AddGo(s);
+	}
 
 	player = new Player("Player");
 	AddGo(player);
@@ -54,34 +64,30 @@ void SceneGame::Update(float dt)
 	
 	if (InputMgr::GetKeyDown(sf::Keyboard::Space))
 	{
-		Zombie::Types zombieType = (Zombie::Types)Utils::RandomRange(0, Zombie::TotalTypes);
-		Zombie* zombie = Zombie::Create(zombieType);
-		zombie->Init();
-		zombie->Reset();
-		zombie->SetPosition(Utils::RandomInUnitCircle() * 500.f); //반경이 500인 원 안에 좀비 생성
-
-		AddGo(zombie);
+		TileMap* tileMap = dynamic_cast<TileMap*>(FindGo("Background"));
+		tileMap->sortLayer = 1;
+		ResortGo(tileMap);
 	}
 
 	//충돌한 좀비 객체 지우기
-	std::list<GameObject*> removeZombieobj; //지울 좀비 객체 담아두기
-	for (auto obj : gameObjects)
-	{
-		Zombie* zombie = dynamic_cast<Zombie*>(obj);
-		if (zombie != nullptr)
-		{
-			if (Utils::Distance(zombie->GetPosition(), player->GetPosition()) <= 10.f)
-			{
-				removeZombieobj.push_back(obj);
-			}
-		}
-	}
+	//std::list<GameObject*> removeZombieobj; //지울 좀비 객체 담아두기
+	//for (auto obj : gameObjects)
+	//{
+	//	Zombie* zombie = dynamic_cast<Zombie*>(obj);
+	//	if (zombie != nullptr)
+	//	{
+	//		if (Utils::Distance(zombie->GetPosition(), player->GetPosition()) <= 10.f)
+	//		{
+	//			removeZombieobj.push_back(obj);
+	//		}
+	//	}
+	//}
 
-	for(auto obj : removeZombieobj)
-	{
-		gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), obj), gameObjects.end());
-		delete obj;
-	}
+	//for(auto obj : removeZombieobj)
+	//{
+	//	gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), obj), gameObjects.end());
+	//	delete obj;
+	//}
 }
 
 void SceneGame::Draw(sf::RenderWindow& window)

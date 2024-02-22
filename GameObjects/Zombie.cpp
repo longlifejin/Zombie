@@ -14,7 +14,7 @@ Zombie* Zombie::Create(Types zombieType)
 		zombie->maxHp = 40;
 		zombie->speed = 100;
 		break;
-	case Zombie::Types::Chase:
+	case Zombie::Types::Chaser:
 		zombie->textureId = "graphics/chaser.png";
 		zombie->maxHp = 70;
 		zombie->speed = 75;
@@ -54,12 +54,23 @@ void Zombie::Reset()
 void Zombie::Update(float dt)
 {
 	SpriteGo::Update(dt);
-	sf::Vector2f playerToZombieDistance = player->GetPosition() - position; //플레이어와 좀비 사이 거리 차이(vector2f형)
-	float zombieAngle = Utils::Angle(playerToZombieDistance);
-	SetRotation(zombieAngle);
-	
-	Utils::Normalize(playerToZombieDistance); //1 또는 -1로 만들어주는 것 //왜 해주는지 알아보기
-	Translate(playerToZombieDistance * speed * dt);
+
+	zomdirection = player->GetPosition() - position;
+	Utils::Normalize(zomdirection);
+	SetRotation(Utils::Angle(zomdirection));
+	Translate(zomdirection * speed * dt);
+
+	//sf::Vector2f playerToZombieDistance = player->GetPosition() - position; //플레이어와 좀비 사이 거리 차이(vector2f형)
+	//float zombieAngle = Utils::Angle(playerToZombieDistance);
+	//SetRotation(zombieAngle);
+	//
+	//Utils::Normalize(playerToZombieDistance); //1 또는 -1로 만들어주는 것 //왜 해주는지 알아보기
+	//Translate(playerToZombieDistance * speed * dt);
+
+	if (Utils::Distance(position, player->GetPosition()) < 50.f)
+	{
+		SCENE_MGR.GetCurrentScene()->RemoveGo(this);
+	}
 
 }
 

@@ -87,10 +87,59 @@ void Scene::Update(float dt)
 			obj->Update(dt);
 		}
 	}
+
+	for (auto obj : resortingGameObjects)
+	{
+		auto it = std::find(gameObjects.begin(), gameObjects.end(), obj);
+		if(it != gameObjects.end()) //찾은 경우
+		{
+			gameObjects.remove(obj);
+			AddGo(obj, Layers::World);
+			continue;
+		}
+
+		it = std::find(uiGameObjects.begin(), uiGameObjects.end(), obj);
+		if (it != uiGameObjects.end()) //찾은 경우
+		{
+			uiGameObjects.remove(obj);
+			AddGo(obj, Layers::Ui);
+			continue;
+		}
+
+	}
+	resortingGameObjects.clear(); //
+
+	for (auto obj : removeGameObjects)
+	{
+		gameObjects.remove(obj);
+		uiGameObjects.remove(obj);
+
+		delete obj;
+	}
+	removeGameObjects.clear(); //다 지우고 목록 비우기 (다시 delete하는 현상 방지)
 }
 
 void Scene::Draw(sf::RenderWindow& window)
-{
+{ 
+	//정렬하고싶은 컨테이너 구간을 넘김
+	//gameObjects.sort([](auto a, auto b) {
+	//		if (a->sortLayer != b->sortLayer)
+	//		{
+	//			return a->sortLayer < b->sortLayer;
+	//		}
+	//		return a->sortOrder < b->sortOrder;
+	//	}); //람다식 : 함수 자체를 식으로 구현하는 것
+
+	//uiGameObjects.sort([](auto a, auto b) {
+	//	if (a->sortLayer != b->sortLayer)
+	//	{
+	//		return a->sortLayer < b->sortLayer;
+	//	}
+	//	return a->sortOrder < b->sortOrder;
+	//	});
+	
+
+
 	const sf::View& saveView = window.getView();
 
 	window.setView(worldView);
@@ -174,9 +223,27 @@ GameObject* Scene::AddGo(GameObject* obj, Layers layer)
 {
 	if (layer == Layers::World)
 	{
+		//순회하면서 들어갈 자리 잡아주기
 		if (std::find(gameObjects.begin(), gameObjects.end(), obj) == gameObjects.end())
 		{
-			gameObjects.push_back(obj);
+			if (gameObjects.empty()) //비어있으면 그냥 바로 넣어주기
+			{
+				gameObjects.push_back(obj);
+				return obj;
+			}
+
+			//비어있지 않으면 위치 잡아주기
+			auto it = gameObjects.begin();
+			while (it != gameObjects.end())
+			{
+				if (GameObject::CompareDrawOrder(obj, *it))
+				{
+					gameObjects.insert(it, obj); //it자리에 obj가 삽입됨
+					return obj;
+				}
+				++it;
+			}
+			gameObjects.push_back(obj); //마지막에 들어가는 경우
 			return obj;
 		}
 	}
@@ -185,15 +252,37 @@ GameObject* Scene::AddGo(GameObject* obj, Layers layer)
 	{
 		if (std::find(uiGameObjects.begin(), uiGameObjects.end(), obj) == uiGameObjects.end())
 		{
-			uiGameObjects.push_back(obj);
+			if (uiGameObjects.empty()) //비어있으면 그냥 바로 넣어주기
+			{
+				uiGameObjects.push_back(obj);
+				return obj;
+			}
+
+			//비어있지 않으면 위치 잡아주기
+			auto it = uiGameObjects.begin();
+			while (it != uiGameObjects.end())
+			{
+				if (GameObject::CompareDrawOrder(obj, *it))
+				{
+					uiGameObjects.insert(it, obj); //it자리에 obj가 삽입됨
+					return obj;
+				}
+				++it;
+			}
+			uiGameObjects.push_back(obj); //마지막에 들어가는 경우
 			return obj;
 		}
 	}
 	return nullptr;
 }
 
+void Scene::ResortGo(GameObject* obj)
+{
+	resortingGameObjects.push_back(obj);
+}
+
 void Scene::RemoveGo(GameObject* obj)
 {
-	gameObjects.remove(obj); //없으면 아무것도 안해서 조건문 안 넣음
-	uiGameObjects.remove(obj);
+	//obj->SetActive(false);
+	removeGameObjects.push_back(obj);
 }

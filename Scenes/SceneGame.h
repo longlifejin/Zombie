@@ -2,11 +2,13 @@
 #include "Scene.h"
 
 class Player;
+class ZombieSpawner;
 
 class SceneGame : public Scene
 {
 protected:
 	Player* player = nullptr;
+	std::vector<ZombieSpawner*> spawners;
 	
 public:
 	SceneGame(SceneIds id);
