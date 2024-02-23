@@ -65,6 +65,9 @@ public:
 	bool GetFlipX() const { return isFlipX; }
 	bool GetFlipY() const { return isFlipY; }
 
+	virtual sf::FloatRect GetLocalBounds() { return sf::FloatRect(); }
+	virtual sf::FloatRect GetGlobalBounds() { return sf::FloatRect(position, {0.f,0.f}); }
+
 
 	virtual void SetActive(bool active) { this->active = active; }
 	virtual void SetOrigin(Origins preset);
@@ -86,6 +89,8 @@ public:
 	virtual void Release();
 	virtual void Reset();
 	virtual void Update(float dt);
+	virtual void LateUpdate(float dt);
+	virtual void FixedUpdate(float dt);
 	virtual void Draw(sf::RenderWindow& window);
 
 	std::string name = "";

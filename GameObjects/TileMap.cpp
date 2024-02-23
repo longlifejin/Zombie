@@ -6,6 +6,20 @@ TileMap::TileMap(const std::string& name)
 {
 }
 
+sf::FloatRect TileMap::GetLocalBounds()
+{
+	sf::FloatRect bounds = va.getBounds();
+	bounds.left = origin.x;
+	bounds.top = origin.y;
+	return bounds;
+}
+
+sf::FloatRect TileMap::GetGlobalBounds()
+{
+	sf::FloatRect bounds = va.getBounds();
+	return transform.transformRect(bounds);
+}
+
 void TileMap::Set(const sf::Vector2i& count, const sf::Vector2f& size)
 {
 	cellCount = count;
@@ -146,11 +160,14 @@ void TileMap::Release()
 void TileMap::Reset()
 {
 	GameObject::Reset();
+
+	
 }
 
 void TileMap::Update(float dt)
 {
 	GameObject::Update(dt);
+
 }
 
 void TileMap::Draw(sf::RenderWindow& window)

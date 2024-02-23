@@ -18,6 +18,12 @@ protected:
 public:
 	TileMap(const std::string& name = "");
 
+	sf::FloatRect GetLocalBounds() override;
+	sf::FloatRect GetGlobalBounds() override;
+
+	const sf::Vector2i& GetCellCount() const { return cellCount; }
+	const sf::Vector2f& GetCellSize() const { return cellSize; }
+
 	void Set(const sf::Vector2i& count, const sf::Vector2f& size);
 	void SetSpriteSheetId(const std::string& id);
 	void UpdateTransform();

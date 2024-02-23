@@ -5,6 +5,12 @@ class Utils
 public:
 	static float Clamp(float v, float min, float max);
 
+	//사각형 안에 position 들어오도록 잘라주는 역할
+	static sf::Vector2f Clamp(const sf::Vector2f& v, const sf::FloatRect& rect);
+
+	//범위 수정하는 역할, delta = 변화량
+	static sf::FloatRect ResizeRect(const sf::FloatRect& rect, const sf::Vector2f& delta);
+
 	// Random
 	static float RandomValue(); // 0.0f ~ 1.0f
 	static float RandomRange(float min, float max);
@@ -29,6 +35,6 @@ public:
 
 	static float RadianToDegree(float radian); //2파이 = 360도
 	static float DegreeToRadian(float degree);
-	static float Angle(const sf::Vector2f& vec); //각도 리타ㅓㄴ
+	static float Angle(const sf::Vector2f& vec); //각도 리턴
 
 };

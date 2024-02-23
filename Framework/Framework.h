@@ -15,15 +15,19 @@ protected:
 
 	sf::RenderWindow window;
 	sf::Vector2i windowSize;
+	float fixedUpdateTime = 1.f / 50.f; //fixedUpdate를 수행할 주기 설정
 
 	sf::Clock clock;
 	float timeScale = 1.f;
 
 	sf::Time realTime; // 게임 시작부터 경과 시간
-	sf::Time time; // 게임 시작부터 경과 시간 (timeScale 적용된...)
-
 	sf::Time realDeltaTime;
+
+	sf::Time time; // 게임 시작부터 경과 시간 (timeScale 적용된...)
 	sf::Time deltaTime;
+
+	sf::Time fixedDeltaTime;
+	
 
 public:
 	sf::RenderWindow& GetWindow() { return window; }	// !!

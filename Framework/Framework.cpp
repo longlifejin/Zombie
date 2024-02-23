@@ -24,6 +24,9 @@ void Framework::Do()
         time += deltaTime;
         realTime += realDeltaTime;
 
+        fixedDeltaTime += deltaTime;
+
+
         InputMgr::Clear();
         sf::Event event;
         while (window.pollEvent(event))
@@ -36,6 +39,16 @@ void Framework::Do()
         InputMgr::Update(GetDT());
 
         SCENE_MGR.Update(GetDT());
+        SCENE_MGR.LateUpdate(GetDT());
+
+        float fdt = fixedDeltaTime.asSeconds(); //매번 함수 호출하는거 줄이려고 float형 변수 만듦
+        if (fdt > fixedUpdateTime)
+        {
+            SCENE_MGR.FixedUpdate(fdt);
+            fixedDeltaTime = sf::Time::Zero; //초기화해서 다시 재야하니까 zero
+        }
+
+
         window.clear();
         SCENE_MGR.Draw(window);
         window.display();

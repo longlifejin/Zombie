@@ -87,11 +87,30 @@ void Scene::Update(float dt)
 			obj->Update(dt);
 		}
 	}
+}
+
+void Scene::LateUpdate(float dt)
+{
+	for (auto obj : gameObjects)
+	{
+		if (obj->GetActive())
+		{
+			obj->LateUpdate(dt);
+		}
+	}
+
+	for (auto obj : uiGameObjects)
+	{
+		if (obj->GetActive())
+		{
+			obj->LateUpdate(dt);
+		}
+	}
 
 	for (auto obj : resortingGameObjects)
 	{
 		auto it = std::find(gameObjects.begin(), gameObjects.end(), obj);
-		if(it != gameObjects.end()) //찾은 경우
+		if (it != gameObjects.end()) //찾은 경우
 		{
 			gameObjects.remove(obj);
 			AddGo(obj, Layers::World);
@@ -105,7 +124,6 @@ void Scene::Update(float dt)
 			AddGo(obj, Layers::Ui);
 			continue;
 		}
-
 	}
 	resortingGameObjects.clear(); //
 
@@ -117,6 +135,26 @@ void Scene::Update(float dt)
 		delete obj;
 	}
 	removeGameObjects.clear(); //다 지우고 목록 비우기 (다시 delete하는 현상 방지)
+}
+
+void Scene::FixedUpdate(float dt)
+{
+	for (auto obj : gameObjects)
+	{
+		if (obj->GetActive())
+		{
+			obj->FixedUpdate(dt);
+		}
+	}
+
+	for (auto obj : uiGameObjects)
+	{
+		if (obj->GetActive())
+		{
+			obj->FixedUpdate(dt);
+		}
+	}
+
 }
 
 void Scene::Draw(sf::RenderWindow& window)
@@ -278,11 +316,18 @@ GameObject* Scene::AddGo(GameObject* obj, Layers layer)
 
 void Scene::ResortGo(GameObject* obj)
 {
-	resortingGameObjects.push_back(obj);
+	//중복되는거 방지
+	if (std::find(resortingGameObjects.begin(), resortingGameObjects.end(), obj) == resortingGameObjects.end())
+	{
+		resortingGameObjects.push_back(obj);
+	}
 }
 
 void Scene::RemoveGo(GameObject* obj)
 {
 	//obj->SetActive(false);
-	removeGameObjects.push_back(obj);
+	if (std::find(removeGameObjects.begin(), removeGameObjects.end(), obj) == removeGameObjects.end())
+	{
+		removeGameObjects.push_back(obj);
+	}
 }

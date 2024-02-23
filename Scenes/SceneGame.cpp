@@ -10,9 +10,27 @@ SceneGame::SceneGame(SceneIds id)
 {
 }
 
+bool SceneGame::isInTileMap(const sf::Vector2f& point)
+{
+	sf::FloatRect rect = tileMap->GetGlobalBounds();
+	rect = Utils::ResizeRect(rect, tileMap->GetCellSize() * -2.f);
+
+	return rect.contains(point); //좌표 안에 있으면 true, 없으면 false 리턴
+}
+
+sf::Vector2f SceneGame::ClampByTileMap(const sf::Vector2f& point)
+{
+	sf::FloatRect rect = tileMap->GetGlobalBounds();
+	rect = Utils::ResizeRect(rect, tileMap->GetCellSize() * -2.f);
+	return Utils::Clamp(point, rect);
+}
+
 void SceneGame::Init()
 {
-	AddGo(new TileMap("Background"));
+	//tileMap이 2개여서 제대로 안움직였던 거였음
+	tileMap = new TileMap("Background");
+	AddGo(tileMap);
+
 
 	spawners.push_back(new ZombieSpawner());
 	spawners.push_back(new ZombieSpawner());
@@ -58,6 +76,8 @@ void SceneGame::Exit()
 
 void SceneGame::Update(float dt)
 {
+	FindGoAll("Zombie", zombieList, Layers::World);
+
 	Scene::Update(dt);
 
 	worldView.setCenter(player->GetPosition()); //플레이어가 계속 중앙에 오게
@@ -88,6 +108,11 @@ void SceneGame::Update(float dt)
 	//	gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), obj), gameObjects.end());
 	//	delete obj;
 	//}
+}
+
+void SceneGame::FixedUpdate(float dt)
+{
+	Scene::FixedUpdate(dt);
 }
 
 void SceneGame::Draw(sf::RenderWindow& window)

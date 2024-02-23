@@ -1,6 +1,11 @@
 #pragma once
 #include "GameObject.h"
 #include "Zombie.h"
+
+
+class TileMap;
+class SceneGame;
+
 class ZombieSpawner : public GameObject
 {
 protected:
@@ -11,6 +16,10 @@ protected:
 	float radius = 250.f; //생성 반경
 
 	float timer = 0.f;
+
+	TileMap* tileMap = nullptr;
+	SceneGame* sceneGame = nullptr;
+
 
 public:
 	ZombieSpawner(const std::string& name = "");
