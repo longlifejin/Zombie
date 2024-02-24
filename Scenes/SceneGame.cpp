@@ -10,28 +10,23 @@ SceneGame::SceneGame(SceneIds id)
 {
 }
 
-bool SceneGame::isInTileMap(const sf::Vector2f& point)
+bool SceneGame::isInTileMap(const sf::Vector2f& point) //현재 위치를 매개변수로 받아서
 {
 	sf::FloatRect rect = tileMap->GetGlobalBounds();
-	rect = Utils::ResizeRect(rect, tileMap->GetCellSize() * -2.f);
+	rect = Utils::ResizeRect(rect, tileMap->GetCellSize() * -2.f); //존재하게 만들 경계를 지정해주고
 
 	return rect.contains(point); //좌표 안에 있으면 true, 없으면 false 리턴
 }
 
 sf::Vector2f SceneGame::ClampByTileMap(const sf::Vector2f& point)
 {
-	sf::FloatRect rect = tileMap->GetGlobalBounds();
-	rect = Utils::ResizeRect(rect, tileMap->GetCellSize() * -2.f);
+	sf::FloatRect rect = tileMap->GetGlobalBounds(); //타일맵의 범위를 임시객체로 만들어서
+	rect = Utils::ResizeRect(rect, tileMap->GetCellSize() * -2.f); //경계부분을 뺀 크기로 resize
 	return Utils::Clamp(point, rect);
 }
 
 void SceneGame::Init()
 {
-	//tileMap이 2개여서 제대로 안움직였던 거였음
-	tileMap = new TileMap("Background");
-	AddGo(tileMap);
-
-
 	spawners.push_back(new ZombieSpawner());
 	spawners.push_back(new ZombieSpawner());
 
@@ -43,6 +38,11 @@ void SceneGame::Init()
 
 	player = new Player("Player");
 	AddGo(player);
+
+	//tileMap이 2개여서 제대로 안움직였던 거였음
+	tileMap = new TileMap("Background");
+	tileMap->sortLayer = -1; //레이어 순서를 player보다 작게 잡아서 뒤에서 AddGo해도 밑에서 이미지 출력됨
+	AddGo(tileMap);
 
 	Scene::Init();
 }
@@ -80,39 +80,21 @@ void SceneGame::Update(float dt)
 
 	Scene::Update(dt);
 
-	worldView.setCenter(player->GetPosition()); //플레이어가 계속 중앙에 오게
+	worldView.setCenter(player->GetPosition()); //뷰 중심점을 플레이어 기준으로 (플레이어가 항상 가운데 옴)
 	
 	if (InputMgr::GetKeyDown(sf::Keyboard::Space))
 	{
 		TileMap* tileMap = dynamic_cast<TileMap*>(FindGo("Background"));
-		tileMap->sortLayer = 1;
+		if (tileMap->sortLayer == 1)
+		{
+			tileMap->sortLayer = -1;
+		}
+		else
+		{
+			tileMap->sortLayer = 1;
+		}
 		ResortGo(tileMap);
 	}
-
-	//충돌한 좀비 객체 지우기
-	//std::list<GameObject*> removeZombieobj; //지울 좀비 객체 담아두기
-	//for (auto obj : gameObjects)
-	//{
-	//	Zombie* zombie = dynamic_cast<Zombie*>(obj);
-	//	if (zombie != nullptr)
-	//	{
-	//		if (Utils::Distance(zombie->GetPosition(), player->GetPosition()) <= 10.f)
-	//		{
-	//			removeZombieobj.push_back(obj);
-	//		}
-	//	}
-	//}
-
-	//for(auto obj : removeZombieobj)
-	//{
-	//	gameObjects.erase(std::remove(gameObjects.begin(), gameObjects.end(), obj), gameObjects.end());
-	//	delete obj;
-	//}
-}
-
-void SceneGame::FixedUpdate(float dt)
-{
-	Scene::FixedUpdate(dt);
 }
 
 void SceneGame::Draw(sf::RenderWindow& window)

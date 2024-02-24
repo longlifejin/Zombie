@@ -88,34 +88,14 @@ void Player::Update(float dt)
 		fireTimer = 0.f; //리셋해줘야 다음 간격때 동작을 안하게되는 것
 	}
 
-	beatTime += dt;
-	if (isbeated && beatTime > unbeatableTime)
+	if (isNoDamage)
 	{
-		OnDamage(10);
-		beatTime = 0.f;
-		isbeated = false;
-	}
-}
-
-void Player::FixedUpdate(float dt)
-{
-	const std::list<GameObject*>& list = sceneGame->GetzombieList();
-	//씬에 있는 충돌체크할 좀비들이 다 넘어옴
-
-	//위의 리스트 순회하면서 충돌체크
-	for (auto go : list)
-	{
-		if (!go->GetActive())
-			continue;
-
-		//위치가 겹치면
-		if (GetGlobalBounds().intersects(go->GetGlobalBounds()))
+		noDamageTime += dt;
+		if (noDamageTimer > noDamageTime)
 		{
-			isbeated = true;
-			break;
+			isNoDamage = false;
 		}
 	}
-	
 }
 
 void Player::Draw(sf::RenderWindow& window)
@@ -135,7 +115,14 @@ void Player::Fire()
 
 void Player::OnDamage(int damage)
 {
+	if (isAlive || isNoDamage) // 살아있고 무적시간이면 그냥 함수 빠져나감
+		return;
+
 	hp -= damage;
+
+	//한번 맞았으니까 무적시간 true하고 무적타이머 초기화
+	isNoDamage = true;
+	noDamageTimer = 0.f;
 
 	if (hp <= 0)
 	{
@@ -146,7 +133,10 @@ void Player::OnDamage(int damage)
 
 void Player::OnDie()
 {
-	
+	if (!isAlive) //이미 죽어있으면 함수 빠져나감
+		return;
+
+	//살아있었으면 active false로 이미지 지워주기
+	isAlive = false;
 	SetActive(false);
-	//sceneGame->RemoveGo(this);
 }

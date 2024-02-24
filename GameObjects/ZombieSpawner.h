@@ -2,8 +2,6 @@
 #include "GameObject.h"
 #include "Zombie.h"
 
-
-class TileMap;
 class SceneGame;
 
 class ZombieSpawner : public GameObject
@@ -17,9 +15,7 @@ protected:
 
 	float timer = 0.f;
 
-	TileMap* tileMap = nullptr;
 	SceneGame* sceneGame = nullptr;
-
 
 public:
 	ZombieSpawner(const std::string& name = "");

@@ -17,12 +17,11 @@ public:
 protected:
 	SceneIds id;
 
-	std::list<GameObject*> gameObjects; //월드에서 사용
-	std::list<GameObject*> uiGameObjects;
+	std::list<GameObject*> gameObjects; //World Layer에서 사용
+	std::list<GameObject*> uiGameObjects; //Ui Layer에서 사용
 
 	std::list<GameObject*> resortingGameObjects; //재정렬 할 리스트
 	std::list<GameObject*> removeGameObjects; //지울 obj 담는 리스트
-
 
 	sf::View worldView;
 	sf::View uiView;
@@ -30,6 +29,7 @@ protected:
 	ResourceMgr<sf::Texture>& texResMgr;
 	ResourceMgr<sf::Font>& fontResMgr;
 	ResourceMgr<sf::SoundBuffer>& soundResMgr;
+
 public:
 	Scene(SceneIds id);
 	virtual ~Scene() = default;

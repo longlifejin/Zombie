@@ -2,7 +2,7 @@
 #include "SpriteGo.h"
 #include "Player.h"
 
-class TileMap;
+class SceneGame;
 
 class Zombie : public SpriteGo
 {
@@ -32,11 +32,11 @@ protected:
 	int hp; //현재 hp
 
 	Player* player;
-
-	sf::Vector2f zomdirection;
-	bool isAlive = true; //죽었나 안죽었나 검사
-
 	SceneGame* sceneGame;
+
+	sf::Vector2f direction;
+	bool isAlive = true; //zombie 죽었나 안죽었나 검사
+
 	Zombie(const std::string& name = ""); //create함수 통해서만 좀비 만들려고 protected 멤버
 
 public:

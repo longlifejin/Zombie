@@ -55,12 +55,12 @@ void Zombie::Release()
 void Zombie::Reset()
 {
 	SpriteGo::Reset();
-	hp = maxHp;
-	isAlive = true;
 	player = dynamic_cast<Player*>(SCENE_MGR.GetCurrentScene()->FindGo("Player"));
 	sceneGame = dynamic_cast<SceneGame*>(SCENE_MGR.GetCurrentScene());
-
-	attackInterval = 5.f;
+	
+	isAlive = true;
+	hp = maxHp;
+	attackTimer = attackInterval; //때릴 시간 초기화
 }
 
 void Zombie::Update(float dt)
@@ -70,32 +70,25 @@ void Zombie::Update(float dt)
 	if (!isAlive) //죽어있으면 밑에 있는 코드 아무것도 동작 안하도록
 		return;
 
-	zomdirection = player->GetPosition() - position;
-	Utils::Normalize(zomdirection);
-	SetRotation(Utils::Angle(zomdirection));
+	direction = player->GetPosition() - position;
+	Utils::Normalize(direction);
+
+	SetRotation(Utils::Angle(direction));
 	
 	//경계 안에서 움직이게 만들기
-	sf::Vector2f pos = position + zomdirection * speed * dt;
-
+	sf::Vector2f pos = position + direction * speed * dt;
 	if (sceneGame != nullptr)
 	{
 		pos = sceneGame->ClampByTileMap(pos);
 	}
 	SetPosition(pos);
-
-	//sf::Vector2f playerToZombieDistance = player->GetPosition() - position; //플레이어와 좀비 사이 거리 차이(vector2f형)
-	//float zombieAngle = Utils::Angle(playerToZombieDistance);
-	//SetRotation(zombieAngle);
-	//
-	//Utils::Normalize(playerToZombieDistance); //1 또는 -1로 만들어주는 것 //왜 해주는지 알아보기
-	//Translate(playerToZombieDistance * speed * dt);
 }
 
 void Zombie::FixedUpdate(float dt)
 {
 	attackTimer += dt;
 
-	if (attackTimer > attackInterval)
+	if (attackTimer > attackInterval) //때릴 수 있는 시간이 되면
 	{
 		if (GetGlobalBounds().intersects(player->GetGlobalBounds()))
 		{
@@ -103,8 +96,6 @@ void Zombie::FixedUpdate(float dt)
 			attackTimer = 0.f;
 		}
 	}
-
-	
 }
 
 void Zombie::Draw(sf::RenderWindow& window)

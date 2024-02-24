@@ -36,7 +36,6 @@ void ZombieSpawner::Reset()
 	timer = 0.f;
 
 	sceneGame = dynamic_cast<SceneGame*>(SCENE_MGR.GetCurrentScene());
-
 }
 
 void ZombieSpawner::Update(float dt)
@@ -60,15 +59,8 @@ void ZombieSpawner::Update(float dt)
 			{
 				pos = sceneGame->ClampByTileMap(pos);
 			}
-
 			zombie->SetPosition(pos);
 			SCENE_MGR.GetCurrentScene()->AddGo(zombie);
 		}
 	}
-
-
-
-
-
-
 }
