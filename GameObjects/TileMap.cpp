@@ -16,18 +16,18 @@ sf::FloatRect TileMap::GetLocalBounds()
 
 sf::FloatRect TileMap::GetGlobalBounds()
 {
-	sf::FloatRect bounds = va.getBounds();
-	return transform.transformRect(bounds);
+	sf::FloatRect bounds = va.getBounds(); //구해진 로컬 좌표계를
+	return transform.transformRect(bounds); //월드 좌표계로 변환해주는 클래스 Transform
 }
 
 void TileMap::Set(const sf::Vector2i& count, const sf::Vector2f& size)
 {
-	cellCount = count;
-	cellSize = size;
+	cellCount = count; //타일 갯수가 넘어옴 {x개, y개}
+	cellSize = size; //타일 크기가 넘어옴
 
 	va.clear(); //정점 배열이 들고 있는 vertex 배열을 클리어
 	va.setPrimitiveType(sf::Quads);
-	va.resize(count.x * count.y * 4); //실제 버텍스 배열의 사이즈를 정해줌 (사각형이니까 *4)
+	va.resize(count.x * count.y * 4); //총 정점 갯수를 정해줌 (사각형이니까 *4)
 	
 	sf::Vector2f posOffsets[4] = {
 		{ 0, 0 },
@@ -160,14 +160,11 @@ void TileMap::Release()
 void TileMap::Reset()
 {
 	GameObject::Reset();
-
-	
 }
 
 void TileMap::Update(float dt)
 {
 	GameObject::Update(dt);
-
 }
 
 void TileMap::Draw(sf::RenderWindow& window)
@@ -178,5 +175,4 @@ void TileMap::Draw(sf::RenderWindow& window)
 	state.transform = transform;
 
 	window.draw(va, state);
-
 }

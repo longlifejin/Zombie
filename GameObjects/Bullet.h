@@ -18,7 +18,6 @@ public:
 
 	void Fire(const sf::Vector2f& dir, float s, int d);
 
-
 	void Init() override;
 	void Reset() override;
 	void Update(float dt) override;

@@ -272,7 +272,7 @@ GameObject* Scene::AddGo(GameObject* obj, Layers layer)
 
 			//비어있지 않으면 위치 잡아주기
 			auto it = gameObjects.begin();
-			while (it != gameObjects.end())
+			while (it != gameObjects.end()) //gameObjects 리스트의 처음부터 끝까지 순회
 			{
 				if (GameObject::CompareDrawOrder(obj, *it))
 				{
@@ -281,7 +281,8 @@ GameObject* Scene::AddGo(GameObject* obj, Layers layer)
 				}
 				++it;
 			}
-			gameObjects.push_back(obj); //마지막에 들어가는 경우
+			//list안에 모든 obj와 비교했을 때 제일 layer와 order가 큰 경우에는
+			gameObjects.push_back(obj); //마지막에 들어가게 됨
 			return obj;
 		}
 	}

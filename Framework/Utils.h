@@ -12,7 +12,7 @@ public:
 	static sf::FloatRect ResizeRect(const sf::FloatRect& rect, const sf::Vector2f& delta);
 
 	// Random
-	static float RandomValue(); // 0.0f ~ 1.0f
+	static float RandomValue(); // 0.f ~ 1.f
 	static float RandomRange(float min, float max);
 	static sf::Vector2f RandomOnUnitCircle();
 	static sf::Vector2f RandomInUnitCircle();

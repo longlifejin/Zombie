@@ -17,6 +17,7 @@ void Player::Init()
 
 	isFiring = false;
 	fireTimer = fireInterval;
+	hp = maxHp;
 }
 
 void Player::Release()
@@ -33,6 +34,7 @@ void Player::Reset()
 
 	isFiring = false;
 	fireTimer = fireInterval;
+	
 	
 }
 
@@ -90,7 +92,7 @@ void Player::Update(float dt)
 
 	if (isNoDamage)
 	{
-		noDamageTime += dt;
+		noDamageTimer += dt;
 		if (noDamageTimer > noDamageTime)
 		{
 			isNoDamage = false;
@@ -115,7 +117,7 @@ void Player::Fire()
 
 void Player::OnDamage(int damage)
 {
-	if (isAlive || isNoDamage) // 살아있고 무적시간이면 그냥 함수 빠져나감
+	if (isAlive && isNoDamage) // 살아있고 무적시간이면 그냥 함수 빠져나감
 		return;
 
 	hp -= damage;

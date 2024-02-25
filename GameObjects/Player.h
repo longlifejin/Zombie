@@ -20,7 +20,6 @@ protected:
 	float noDamageTime = 1.f;
 	float noDamageTimer = 0.f;
 
-	//float beatTime = 0.f;
 
 	//발사체 관련
 	float bulletSpeed = 1000.f;
