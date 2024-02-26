@@ -21,7 +21,7 @@ void UiHud::SetHiScore(int s)
 
 }
 
-void UiHud::SetAmmo(int current, int total)
+void UiHud::SetAmmo(int current, int total) //재장전시 호출하기
 {
 	textAmmo.SetString(std::to_string(current) + "/" + std::to_string(total - current));
 }

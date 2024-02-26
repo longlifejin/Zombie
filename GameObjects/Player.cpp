@@ -35,12 +35,14 @@ void Player::Reset()
 	//tileMap이 없으면 null을 리턴함
 	//uiHud = dynamic_cast<UiHud*>();
 
-	sceneGame->GetHud()->SetHp(hp, maxHp);
-
 	isFiring = false;
 	fireTimer = fireInterval;
 	hp = maxHp;
 	ammo = maxAmmo;
+	reloadingAmmo = 0;
+
+	sceneGame->GetHud()->SetHp(hp, maxHp);
+	sceneGame->GetHud()->SetAmmo(ammo, ammo + reloadingAmmo);
 }
 
 void Player::Update(float dt)
@@ -89,7 +91,7 @@ void Player::Update(float dt)
 	}
 
 	fireTimer += dt;
-	if (isFiring && fireTimer > fireInterval && ammo > 0)
+	if (isFiring && fireTimer > fireInterval && ammo + reloadingAmmo > 0)
 	{
 		Fire();
 		fireTimer = 0.f; //리셋해줘야 다음 간격때 동작을 안하게되는 것
@@ -112,6 +114,18 @@ void Player::Draw(sf::RenderWindow& window)
 
 void Player::Fire()
 {
+	if (ammo + reloadingAmmo == 0)
+		return;
+
+	if (ammo == 0 && reloadingAmmo >= 5)
+	{
+		ammo += 5;
+		reloadingAmmo -= 5;
+	}
+		
+	ammo -= 1;
+	sceneGame->GetHud()->SetAmmo(ammo, ammo + reloadingAmmo);
+
 	Bullet* bullet = new Bullet();
 	bullet->Init();
 	bullet->Reset();
@@ -120,7 +134,7 @@ void Player::Fire()
 	sceneGame->AddGo(bullet);
 
 	//사운드 재생
-	SOUND_MGR.PlaySfx("sound/shoot.wav");
+	//SOUND_MGR.PlaySfx("sound/shoot.wav");
 
 
 }
@@ -158,10 +172,20 @@ void Player::OnItem(Item* item)
 {
 	switch (item->GetType())
 	{case Item::Types::Ammo:
-		ammo += item->GetValue();
+		reloadingAmmo += item->GetValue();
+		if (ammo + item->GetValue() > maxAmmo)
+		{
+			ammo = maxAmmo;
+		}
+		sceneGame->GetHud()->SetAmmo(ammo, reloadingAmmo);
 		break;
 	case Item::Types::Health:
 		hp += item->GetValue();
+		if (hp + item->GetValue() > maxHp)
+		{
+			hp = maxHp;
+		}
+		sceneGame->GetHud()->SetHp(hp, maxHp);
 		break;
 	}
 }

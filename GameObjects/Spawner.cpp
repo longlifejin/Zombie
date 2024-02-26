@@ -2,6 +2,7 @@
 #include "ZombieSpawner.h"
 #include "SceneGame.h"
 #include "Spawner.h"
+#include "UiHud.h"
 
 Spawner::Spawner(const std::string & name)
 	:GameObject(name)
@@ -42,23 +43,25 @@ void Spawner::Update(float dt)
 	GameObject::Update(dt);
 
 	timer += dt;
+
 	if (timer > interval) //interval초마다 할 일 적어주기
 	{
 		timer = 0.f;
 
-		for (int i = 0; i < spawnCount; ++i)
-		{
-			sf::Vector2f pos = position + Utils::RandomInUnitCircle() * radius;
-			if (sceneGame != nullptr)
+			for (int i = 0; i < spawnCount; ++i)
 			{
-				pos = sceneGame->ClampByTileMap(pos);
-			}
+				sf::Vector2f pos = position + Utils::RandomInUnitCircle() * radius;
+				if (sceneGame != nullptr)
+				{
+					pos = sceneGame->ClampByTileMap(pos);
+				}
 
-			GameObject* newGo = Create();
-			newGo->Init();
-			newGo->Reset();
-			newGo->SetPosition(pos);
-			SCENE_MGR.GetCurrentScene()->AddGo(newGo);
-		}
+				GameObject* newGo = Create();
+				newGo->Init();
+				newGo->Reset();
+				newGo->SetPosition(pos);
+				SCENE_MGR.GetCurrentScene()->AddGo(newGo);
+			}
+	
 	}
 }

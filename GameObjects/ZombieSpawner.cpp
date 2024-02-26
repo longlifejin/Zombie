@@ -17,6 +17,8 @@ void ZombieSpawner::Reset()
 {
 	Spawner::Reset();
 
+	sceneGame = dynamic_cast<SceneGame*>(SCENE_MGR.GetCurrentScene());
+
 	zombieTypes.clear();
 	zombieTypes.push_back(Zombie::Types::Bloater); //제일 적게 나오게
 	zombieTypes.push_back(Zombie::Types::Chaser);

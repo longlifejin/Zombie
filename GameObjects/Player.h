@@ -32,8 +32,9 @@ protected:
 	float fireTimer = 0.f; //interval로 초기화해서 빼기할 거임
 
 	//Item 관련
-	int maxAmmo = 20;
-	int ammo = 0;
+	int maxAmmo = 50;
+	int ammo = 20;
+	int reloadingAmmo = 0;
 
 
 public:

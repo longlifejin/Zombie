@@ -41,13 +41,19 @@ void SoundMgr::Release()
 
 void SoundMgr::Update(float dt)
 {
-	/*if (sound->getStatus() == sf::SoundSource::Stopped)
+	std::vector<sf::Sound*> toMove;
+	for (auto sound : playing)
 	{
-
-	}*/
-
-	//erase 사용 -> return값은 지운 애 다음 it 리턴
-
+		if (sound->getStatus() == sf::Sound::Stopped)
+		{
+			toMove.push_back(sound);
+		}
+	}
+	for (auto sound : toMove)
+	{
+		waiting.push_back(sound);
+		playing.remove(sound);
+	}
 
 
 }

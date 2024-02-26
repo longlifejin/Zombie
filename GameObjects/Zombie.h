@@ -12,6 +12,7 @@ public:
 		Bloater,
 		Chaser,
 		Crawler,
+		None,
 	};
 	static const int TotalTypes = 3;
 	static Zombie* Create(Types zombieType);
@@ -30,6 +31,7 @@ protected:
 	sf::Vector2f zombieLook = { 1.f, 0.f };
 
 	int hp; //ÇöÀç hp
+	int zombieCount = 30;
 
 	Player* player;
 	SceneGame* sceneGame;

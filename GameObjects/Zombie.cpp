@@ -33,6 +33,8 @@ Zombie* Zombie::Create(Types zombieType)
 		zombie->damage = 75;
 		zombie->attackInterval = 0.25f;
 		break;
+	case Zombie::Types::None:
+		break;
 	}
 	return zombie;
 }

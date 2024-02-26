@@ -30,8 +30,7 @@ sf::Vector2f SceneGame::ClampByTileMap(const sf::Vector2f& point)
 void SceneGame::Init()
 {
 	spawners.push_back(new ZombieSpawner());
-	spawners.push_back(new ZombieSpawner());
-	spawners.push_back(new ItemSpawner());
+	itemSpawners.push_back(new ItemSpawner());
 	
 	for (auto s : spawners)
 	{
@@ -39,11 +38,12 @@ void SceneGame::Init()
 		AddGo(s);
 	}
 
-	/*for (auto item : itemSpawners)
+
+	for (auto item : itemSpawners)
 	{
 		item->SetPosition(Utils::RandomOnUnitCircle() * 250.f);
 		AddGo(item);
-	}*/
+	}
 
 	player = new Player("Player");
 	AddGo(player);
@@ -79,9 +79,8 @@ void SceneGame::Enter()
 
 	uiHud->SetScore(0);
 	uiHud->SetHiScore(0);
-	uiHud->SetAmmo(0,10);
 	uiHud->SetWave(1);
-	uiHud->SetZombieCount(0);
+	uiHud->SetZombieCount(30);
 	
 	sf::Vector2f windowSize = (sf::Vector2f)FRAMEWORK.GetWindowSize();
 	sf::Vector2f centerPos = windowSize * 0.5f;
