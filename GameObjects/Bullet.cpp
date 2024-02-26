@@ -64,6 +64,7 @@ void Bullet::FixedUpdate(float dt)
 			sceneGame->RemoveGo(this); //총알 지워주기
 			//겹쳐지는 오브젝트가 있으면 delete한 애를 또 delete해서 에러가 나니까 따로 처리해줘야함
 			
+			
 			Zombie* zombie = dynamic_cast<Zombie*>(go);
 			if(zombie != nullptr)
 				zombie->OnDamage(10);

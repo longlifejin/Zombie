@@ -4,23 +4,34 @@
 
 class Player;
 class ZombieSpawner;
+class ItemSpawner;
+class Spawner;
 class TileMap;
 class Zombie;
+class UiHud;
+class SpriteGo;
 
 class SceneGame : public Scene
 {
 protected:
 	Player* player = nullptr;
-	TileMap* tileMap;
+	TileMap* tileMap; 
 
-	std::vector<ZombieSpawner*> spawners;
+	UiHud* uiHud;
+	SpriteGo* crosshair;
+
+	std::vector<Spawner*> spawners;
+	std::vector<ItemSpawner*> itemSpawners;
 	std::list<GameObject*> zombieList;
+	std::list<GameObject*> itemList;
 	
 public:
 	SceneGame(SceneIds id);
 	~SceneGame() override = default;
 
 	const std::list<GameObject*>& GetzombieList() const { return zombieList; }
+
+	UiHud* GetHud() const { return uiHud; }
 
 	bool isInTileMap(const sf::Vector2f& point);
 	sf::Vector2f ClampByTileMap(const sf::Vector2f& point);
@@ -32,6 +43,7 @@ public:
 	void Exit() override;
 
 	void Update(float dt) override;
+	void FixedUpdate(float dt) override;
 	void Draw(sf::RenderWindow& window) override;
 
 };

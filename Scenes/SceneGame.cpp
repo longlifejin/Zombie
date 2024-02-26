@@ -4,6 +4,8 @@
 #include "TileMap.h"
 #include "Zombie.h"
 #include "ZombieSpawner.h"
+#include "ItemSpawner.h"
+#include "UiHud.h"
 
 SceneGame::SceneGame(SceneIds id)
 	:Scene(id)
@@ -29,12 +31,19 @@ void SceneGame::Init()
 {
 	spawners.push_back(new ZombieSpawner());
 	spawners.push_back(new ZombieSpawner());
-
+	spawners.push_back(new ItemSpawner());
+	
 	for (auto s : spawners)
 	{
 		s->SetPosition(Utils::RandomOnUnitCircle() * 250.f);
 		AddGo(s);
 	}
+
+	/*for (auto item : itemSpawners)
+	{
+		item->SetPosition(Utils::RandomOnUnitCircle() * 250.f);
+		AddGo(item);
+	}*/
 
 	player = new Player("Player");
 	AddGo(player);
@@ -42,7 +51,17 @@ void SceneGame::Init()
 	//tileMap이 2개여서 제대로 안움직였던 거였음
 	tileMap = new TileMap("Background");
 	tileMap->sortLayer = -1; //레이어 순서를 player보다 작게 잡아서 뒤에서 AddGo해도 밑에서 이미지 출력됨
+	tileMap->sortOrder = 0;
 	AddGo(tileMap);
+
+	crosshair = new SpriteGo("crosshair");
+	crosshair->SetTexture("graphics/crosshair.png");
+	crosshair->sortLayer = -1;
+	crosshair->SetOrigin(Origins::MC);
+	AddGo(crosshair, Scene::Layers::Ui);
+
+	uiHud = new UiHud();
+	AddGo(uiHud, Layers::Ui);
 
 	Scene::Init();
 }
@@ -54,8 +73,16 @@ void SceneGame::Release()
 
 void SceneGame::Enter()
 {
+	FRAMEWORK.GetWindow().setMouseCursorVisible(false);
+
 	Scene::Enter();
 
+	uiHud->SetScore(0);
+	uiHud->SetHiScore(0);
+	uiHud->SetAmmo(0,10);
+	uiHud->SetWave(1);
+	uiHud->SetZombieCount(0);
+	
 	sf::Vector2f windowSize = (sf::Vector2f)FRAMEWORK.GetWindowSize();
 	sf::Vector2f centerPos = windowSize * 0.5f;
 	worldView.setSize(windowSize);
@@ -71,14 +98,19 @@ void SceneGame::Enter()
 
 void SceneGame::Exit()
 {
+	FRAMEWORK.GetWindow().setMouseCursorVisible(true);
+
 	Scene::Exit();
 }
 
 void SceneGame::Update(float dt)
 {
 	FindGoAll("Zombie", zombieList, Layers::World);
+	FindGoAll("item", itemList, Layers::World);
 
 	Scene::Update(dt);
+
+	crosshair->SetPosition(ScreenToUi((sf::Vector2i)(InputMgr::GetMousePos())));
 
 	worldView.setCenter(player->GetPosition()); //뷰 중심점을 플레이어 기준으로 (플레이어가 항상 가운데 옴)
 	
@@ -95,6 +127,13 @@ void SceneGame::Update(float dt)
 		}
 		ResortGo(tileMap);
 	}
+
+}
+
+void SceneGame::FixedUpdate(float dt)
+{
+	FindGoAll("Zombie", zombieList, Layers::World);
+	Scene::FixedUpdate(dt);
 }
 
 void SceneGame::Draw(sf::RenderWindow& window)

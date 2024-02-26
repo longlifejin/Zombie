@@ -3,6 +3,8 @@
 #include "TileMap.h"
 #include "SceneGame.h"
 #include "Bullet.h"
+#include "Item.h"
+#include "UiHud.h"
 
 Player::Player(const std::string& name)
 	:SpriteGo(name)
@@ -31,11 +33,14 @@ void Player::Reset()
 
 	sceneGame = dynamic_cast<SceneGame*>(SCENE_MGR.GetCurrentScene());
 	//tileMap이 없으면 null을 리턴함
+	//uiHud = dynamic_cast<UiHud*>();
+
+	sceneGame->GetHud()->SetHp(hp, maxHp);
 
 	isFiring = false;
 	fireTimer = fireInterval;
-	
-	
+	hp = maxHp;
+	ammo = maxAmmo;
 }
 
 void Player::Update(float dt)
@@ -84,7 +89,7 @@ void Player::Update(float dt)
 	}
 
 	fireTimer += dt;
-	if (isFiring && fireTimer > fireInterval)
+	if (isFiring && fireTimer > fireInterval && ammo > 0)
 	{
 		Fire();
 		fireTimer = 0.f; //리셋해줘야 다음 간격때 동작을 안하게되는 것
@@ -113,6 +118,11 @@ void Player::Fire()
 	bullet->SetPosition(position);
 	bullet->Fire(look, bulletSpeed, bulletDamage);
 	sceneGame->AddGo(bullet);
+
+	//사운드 재생
+	SOUND_MGR.PlaySfx("sound/shoot.wav");
+
+
 }
 
 void Player::OnDamage(int damage)
@@ -121,6 +131,7 @@ void Player::OnDamage(int damage)
 		return;
 
 	hp -= damage;
+	sceneGame->GetHud()->SetHp(hp, maxHp);
 
 	//한번 맞았으니까 무적시간 true하고 무적타이머 초기화
 	isNoDamage = true;
@@ -141,4 +152,16 @@ void Player::OnDie()
 	//살아있었으면 active false로 이미지 지워주기
 	isAlive = false;
 	SetActive(false);
+}
+
+void Player::OnItem(Item* item)
+{
+	switch (item->GetType())
+	{case Item::Types::Ammo:
+		ammo += item->GetValue();
+		break;
+	case Item::Types::Health:
+		hp += item->GetValue();
+		break;
+	}
 }

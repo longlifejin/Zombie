@@ -2,6 +2,8 @@
 #include "Zombie.h"
 #include "player.h"
 #include "SceneGame.h"
+#include "SpriteGoEffect.h"
+#include "Uihud.h"
 
 Zombie* Zombie::Create(Types zombieType)
 {
@@ -125,4 +127,30 @@ void Zombie::OnDie()
 	isAlive = false;
 	SetActive(false);
 	sceneGame->RemoveGo(this);
+
+	PlayBloodEffect();
+
+	sceneGame->GetHud()->SetScore(sceneGame->GetHud()->AddScore(10));
+
+	int currentScore = sceneGame->GetHud()->GetCurrentScore();
+	int highestScore = sceneGame->GetHud()->GetHighestScore();
+	if (highestScore < currentScore)
+	{
+		sceneGame->GetHud()->SetHiScore(currentScore);
+	}
+}
+
+void Zombie::PlayBloodEffect()
+{
+	//피를 표현하는 객체 만들기
+	SpriteGoEffect* effectBlood = new SpriteGoEffect();
+	effectBlood->Init();
+	effectBlood->SetOrigin(Origins::MC);
+	effectBlood->SetTexture("graphics/blood.png");
+	effectBlood->Reset();
+	effectBlood->sortLayer = -1;
+	effectBlood->sortOrder = 1;
+	effectBlood->SetPosition(position);
+	effectBlood->SetRotation(Utils::RandomRange(0.f, 360.f));
+	sceneGame->AddGo(effectBlood);
 }

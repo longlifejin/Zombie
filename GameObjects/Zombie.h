@@ -51,6 +51,7 @@ public:
 
 	void OnDamage(int damage); //호출되면 hp가 깎임
 	void OnDie(); //0이 되면 죽이는 일
+	void PlayBloodEffect();
 
 
 };

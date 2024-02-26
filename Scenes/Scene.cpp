@@ -139,6 +139,9 @@ void Scene::LateUpdate(float dt)
 
 void Scene::FixedUpdate(float dt)
 {
+	
+
+
 	for (auto obj : gameObjects)
 	{
 		if (obj->GetActive())
@@ -175,8 +178,6 @@ void Scene::Draw(sf::RenderWindow& window)
 	//	}
 	//	return a->sortOrder < b->sortOrder;
 	//	});
-	
-
 
 	const sf::View& saveView = window.getView();
 
